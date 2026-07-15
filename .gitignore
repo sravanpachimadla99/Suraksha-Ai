@@ -1,0 +1,35 @@
+# Node
+node_modules/
+.next/
+out/
+build/
+dist/
+
+# Python
+.venv/
+venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+uploads/
+
+# Environments / Secrets
+.env
+.env.local
+.env.production
+.env.development
+secrets.json
+
+# IDEs
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# OS / Logs
+.DS_Store
+Thumbs.db
+*.log
