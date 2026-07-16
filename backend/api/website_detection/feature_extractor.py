@@ -23,12 +23,12 @@ SUSPICIOUS_TLDS = {
 }
 
 SUSPICIOUS_KEYWORDS = [
-    "login", "signin", "verify", "secure", "account", "update",
-    "bank", "paypal", "amazon", "google", "microsoft", "apple",
-    "support", "alert", "confirm", "password", "otp", "kyc",
-    "reward", "prize", "lottery", "gift", "free", "urgent",
-    "suspended", "blocked", "limited", "action", "required",
-    "rbi", "sbi", "hdfc", "icici", "axis", "npci", "upi",
+    "phish", "phishing", "scam", "fraud", "fake", "login", "signin",
+    "verify", "secure", "account", "update", "bank", "paypal", "amazon",
+    "google", "microsoft", "apple", "support", "alert", "confirm",
+    "password", "otp", "kyc", "reward", "prize", "lottery", "gift",
+    "free", "urgent", "suspended", "blocked", "limited", "action",
+    "required", "rbi", "sbi", "hdfc", "icici", "axis", "npci", "upi",
     "aadhaar", "pan", "income-tax",
 ]
 
@@ -103,6 +103,9 @@ class URLFeatureExtractor:
     def __init__(self, url: str) -> None:
         self.url = url
         self._parsed = urllib.parse.urlparse(url)
+        # Handle case where URL doesn't have scheme
+        if not self._parsed.scheme:
+            self._parsed = urllib.parse.urlparse("https://" + url)
         self.domain = self._parsed.netloc.lower().split(":")[0]
         self.path = self._parsed.path
         self.tld = self.domain.split(".")[-1] if "." in self.domain else ""
@@ -171,28 +174,33 @@ class URLFeatureExtractor:
         """
         score = 0.0
 
+        # High-risk keywords in the domain name itself
+        domain_lower = self.domain.lower()
+        if any(kw in domain_lower for kw in ["phish", "scam", "fraud", "evil", "fake"]):
+            score += 0.50
+
         if not self.has_https:
-            score += 0.15
-        if self.has_ip_address:
             score += 0.20
+        if self.has_ip_address:
+            score += 0.35
         if self.uses_suspicious_tld:
-            score += 0.15
+            score += 0.20
         if self.subdomain_count >= 3:
-            score += 0.10
-        if self.url_length > 100:
+            score += 0.15
+        if self.url_length > 80:
             score += 0.10
         if self.special_char_count >= 3:
             score += 0.10
         if self.has_at_symbol:
-            score += 0.15
-        if self.has_double_slash:
-            score += 0.05
-        if self.has_redirect:
-            score += 0.10
-        if self.suspicious_keyword_count >= 3:
-            score += 0.15
-        if self.typosquatting_score >= 0.5:
             score += 0.20
+        if self.has_double_slash:
+            score += 0.10
+        if self.has_redirect:
+            score += 0.15
+        if self.suspicious_keyword_count >= 1:
+            score += min(0.40, 0.15 * self.suspicious_keyword_count)
+        if self.typosquatting_score >= 0.4:
+            score += 0.25
 
         return min(score, 1.0)
 
