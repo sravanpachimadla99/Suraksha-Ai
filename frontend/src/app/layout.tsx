@@ -29,6 +29,22 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${inter.variable} h-full antialiased`}>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: `
+          (function() {
+            const originalFetch = window.fetch;
+            window.fetch = function(input, init) {
+              if (typeof input === 'string' && input.startsWith('http://localhost:8000')) {
+                const backendUrl = window.location.hostname === 'localhost'
+                  ? 'http://localhost:8000'
+                  : 'https://suraksha-ai-8g47.onrender.com';
+                input = input.replace('http://localhost:8000', backendUrl);
+              }
+              return originalFetch(input, init);
+            };
+          })();
+        ` }} />
+      </head>
       <body className="min-h-full flex flex-col font-[var(--font-inter)]">
         {children}
       </body>
