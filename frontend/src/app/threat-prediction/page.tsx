@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { TrendingUp, AlertTriangle, Cpu, Globe, RefreshCw } from "lucide-react";
 import ForecastChart from "./components/ForecastChart";
 import AlertCards from "./components/AlertCards";
+import { BACKEND_URL } from "../../lib/api";
 
 export default function ThreatPredictionPage() {
   const [predictions, setPredictions] = useState<any[]>([]);
@@ -16,9 +17,9 @@ export default function ThreatPredictionPage() {
     try {
       setLoading(true);
       const [predRes, alertRes, modelRes] = await Promise.all([
-        fetch("http://localhost:8000/api/v1/prediction/current"),
-        fetch("http://localhost:8000/api/v1/prediction/alerts"),
-        fetch("http://localhost:8000/api/v1/prediction/models")
+        fetch(`${BACKEND_URL}/api/v1/prediction/current`),
+        fetch(`${BACKEND_URL}/api/v1/prediction/alerts`),
+        fetch(`${BACKEND_URL}/api/v1/prediction/models`)
       ]);
       if (predRes.ok) setPredictions(await predRes.json());
       if (alertRes.ok) setAlerts(await alertRes.json());
@@ -46,7 +47,7 @@ export default function ThreatPredictionPage() {
 
   const triggerForecastRun = async (category: string) => {
     try {
-      const res = await fetch("http://localhost:8000/api/v1/prediction/run", {
+      const res = await fetch(`${BACKEND_URL}/api/v1/prediction/run`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ category, model_name: selectedModel })

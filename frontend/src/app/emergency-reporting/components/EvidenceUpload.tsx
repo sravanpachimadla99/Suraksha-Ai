@@ -1,5 +1,6 @@
 import { useState, useRef } from 'react';
 import { UploadCloud, File as FileIcon, X, CheckCircle } from 'lucide-react';
+import { BACKEND_URL } from '../../../lib/api';
 
 export default function EvidenceUpload({ reportId, onComplete }: { reportId: string, onComplete: () => void }) {
   const [files, setFiles] = useState<{name: string, status: string}[]>([]);
@@ -15,7 +16,7 @@ export default function EvidenceUpload({ reportId, onComplete }: { reportId: str
       formData.append('file', file);
       
       try {
-        await fetch(`http://localhost:8000/api/v1/report/upload?report_id=${reportId}`, {
+        await fetch(`${BACKEND_URL}/api/v1/report/upload?report_id=${reportId}`, {
           method: 'POST',
           body: formData
         });

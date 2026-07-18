@@ -5,6 +5,7 @@ import { ShieldCheck, MessageSquare, AlertTriangle, Send } from "lucide-react";
 import ChatWindow from "./components/ChatWindow";
 import MessageInput from "./components/MessageInput";
 import SuggestedPrompts from "./components/SuggestedPrompts";
+import { BACKEND_URL } from "../../lib/api";
 
 export default function CitizenAssistantPage() {
   const [messages, setMessages] = useState<any[]>([
@@ -41,7 +42,7 @@ export default function CitizenAssistantPage() {
         ? { session_id: sessionId, file_name: file.name, file_type: file.type, content: b64 }
         : { message: text, session_id: sessionId, language: "en" };
 
-      const response = await fetch(`http://localhost:8000${endpoint}`, {
+      const response = await fetch(`${BACKEND_URL}${endpoint}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload)

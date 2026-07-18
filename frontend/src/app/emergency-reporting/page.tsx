@@ -6,6 +6,7 @@ import ComplaintForm from "./components/ComplaintForm";
 import EvidenceUpload from "./components/EvidenceUpload";
 import TimelineViewer from "./components/TimelineViewer";
 import ReportViewer from "./components/ReportViewer";
+import { BACKEND_URL } from "../../lib/api";
 
 export default function EmergencyReportingPage() {
   const [step, setStep] = useState(1);
@@ -15,7 +16,7 @@ export default function EmergencyReportingPage() {
   const handleFormSubmit = async (data: any) => {
     setLoading(true);
     try {
-      const res = await fetch("http://localhost:8000/api/v1/report/emergency", {
+      const res = await fetch(`${BACKEND_URL}/api/v1/report/emergency`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -44,7 +45,7 @@ export default function EmergencyReportingPage() {
   const generatePDF = async () => {
     setLoading(true);
     try {
-       await fetch(`http://localhost:8000/api/v1/report/generate?report_id=${reportData.id}`, { method: "POST" });
+       await fetch(`${BACKEND_URL}/api/v1/report/generate?report_id=${reportData.id}`, { method: "POST" });
        setStep(4);
     } catch (err) {
        console.error(err);

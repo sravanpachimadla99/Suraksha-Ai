@@ -2,9 +2,7 @@
 // SurakshaAI — Frontend API Client
 // Typed fetch wrappers for all backend endpoints
 // ═══════════════════════════════════════════════════════════
-export const BACKEND_URL = typeof window !== "undefined" && window.location.hostname === "localhost"
-  ? "http://localhost:8000"
-  : (process.env.NEXT_PUBLIC_API_URL || "https://suraksha-ai-8g47.onrender.com");
+export const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL || "https://suraksha-ai-8g47.onrender.com";
 
 const API_BASE = `${BACKEND_URL}/api/v1`;
 

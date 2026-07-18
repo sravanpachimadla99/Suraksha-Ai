@@ -10,6 +10,7 @@ import {
 import NetworkGraph from "./components/NetworkGraph";
 import NodeDetailsPanel from "./components/NodeDetailsPanel";
 import AnalyticsPanel from "./components/AnalyticsPanel";
+import { BACKEND_URL } from "../../lib/api";
 
 export default function FraudIntelligencePage() {
   const [nodes, setNodes] = useState<any[]>([]);
@@ -19,7 +20,7 @@ export default function FraudIntelligencePage() {
 
   const fetchGraphData = async () => {
     try {
-      const response = await fetch("http://localhost:8000/api/v1/graph/network");
+      const response = await fetch(`${BACKEND_URL}/api/v1/graph/network`);
       if (!response.ok) throw new Error("Failed to fetch");
       const data = await response.json();
       

@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { MapPin, Search, Filter, ShieldAlert, Activity } from "lucide-react";
 import dynamic from "next/dynamic";
 import AnalyticsPanel from "./components/AnalyticsPanel";
+import { BACKEND_URL } from "../../lib/api";
 
 // Leaflet requires window object, so we load it dynamically
 const InteractiveMap = dynamic(() => import("./components/InteractiveMap"), { 
@@ -30,8 +31,8 @@ export default function GeoIntelligencePage() {
       if (filters.riskLevel) queryParams.append("risk_level", filters.riskLevel);
       
       const [incidentRes, clusterRes] = await Promise.all([
-        fetch(`http://localhost:8000/api/v1/geo/incidents?${queryParams.toString()}`),
-        fetch(`http://localhost:8000/api/v1/geo/clusters`)
+        fetch(`${BACKEND_URL}/api/v1/geo/incidents?${queryParams.toString()}`),
+        fetch(`${BACKEND_URL}/api/v1/geo/clusters`)
       ]);
       
       if (incidentRes.ok) setIncidents(await incidentRes.json());

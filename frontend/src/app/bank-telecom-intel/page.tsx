@@ -5,6 +5,7 @@ import { ShieldCheck, Database, Users, Bell, Search, Settings } from "lucide-rea
 import RiskCard from "./components/RiskCard";
 import AlertFeed from "./components/AlertFeed";
 import BlacklistManager from "./components/BlacklistManager";
+import { BACKEND_URL } from "../../lib/api";
 
 export default function BankTelecomIntelPage() {
   const [role, setRole] = useState<string>("police"); // default role simulation
@@ -18,10 +19,10 @@ export default function BankTelecomIntelPage() {
     async function fetchData() {
       try {
         const [accRes, numRes, alertRes, dashRes] = await Promise.all([
-          fetch("http://localhost:8000/api/v1/bank/accounts"),
-          fetch("http://localhost:8000/api/v1/telecom/numbers"),
-          fetch("http://localhost:8000/api/v1/bank/alerts"),
-          fetch("http://localhost:8000/api/v1/intelligence/dashboard")
+          fetch(`${BACKEND_URL}/api/v1/bank/accounts`),
+          fetch(`${BACKEND_URL}/api/v1/telecom/numbers`),
+          fetch(`${BACKEND_URL}/api/v1/bank/alerts`),
+          fetch(`${BACKEND_URL}/api/v1/intelligence/dashboard`)
         ]);
         
         if (accRes.ok) setAccounts(await accRes.json());
@@ -184,7 +185,7 @@ export default function BankTelecomIntelPage() {
               {role === 'police' && (
                 <BlacklistManager 
                   onAddAccount={async (data) => {
-                     const res = await fetch("http://localhost:8000/api/v1/bank/report-account", {
+                     const res = await fetch(`${BACKEND_URL}/api/v1/bank/report-account`, {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
                         body: JSON.stringify({...data, risk_score: 0.99})

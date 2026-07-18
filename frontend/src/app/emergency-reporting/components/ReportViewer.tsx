@@ -1,4 +1,5 @@
 import { FileText, Download, ShieldCheck, User } from "lucide-react";
+import { BACKEND_URL } from "../../../lib/api";
 
 export default function ReportViewer({ reportData }: { reportData: any }) {
   if (!reportData) return null;
@@ -22,7 +23,7 @@ export default function ReportViewer({ reportData }: { reportData: any }) {
          <p className="text-slate-400 max-w-md mb-8">Contains timeline reconstruction, extracted financial indicators, IP logs, and AI-suggested Indian Penal Code sections.</p>
          
          <a 
-           href={`http://localhost:8000/api/v1/report/download/${reportData.id}`}
+           href={`${BACKEND_URL}/api/v1/report/download/${reportData.id}`}
            target="_blank"
            rel="noreferrer"
            className="bg-indigo-600 hover:bg-indigo-700 text-white px-8 py-3 rounded-lg font-bold transition-all shadow-lg shadow-indigo-500/20 flex items-center gap-2 text-lg"
