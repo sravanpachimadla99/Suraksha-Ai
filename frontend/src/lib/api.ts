@@ -50,11 +50,16 @@ export interface Hotspot {
 
 async function apiFetch<T>(path: string, options?: RequestInit): Promise<T | null> {
   try {
+    const controller = new AbortController();
+    // 60-second timeout to accommodate Render free-tier cold starts (~30s wake time)
+    const timeoutId = setTimeout(() => controller.abort(), 60000);
     const res = await fetch(`${API_BASE}${path}`, {
       headers: { "Content-Type": "application/json" },
       ...options,
+      signal: controller.signal,
     });
-    if (!res.ok) throw new Error(`API ${res.status}`);
+    clearTimeout(timeoutId);
+    if (!res.ok) throw new Error(`API ${res.status}: ${res.statusText}`);
     return (await res.json()) as T;
   } catch (err) {
     console.error(`[SurakshaAI API] ${path}:`, err);

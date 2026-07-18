@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import BackendWakeup from "../components/BackendWakeup";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -46,6 +47,7 @@ export default function RootLayout({
         ` }} />
       </head>
       <body className="min-h-full flex flex-col font-[var(--font-inter)]">
+        <BackendWakeup />
         {children}
       </body>
     </html>
