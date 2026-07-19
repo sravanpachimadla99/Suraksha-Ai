@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { BACKEND_URL } from "../../lib/api";
+import { BACKEND_URL } from "../lib/api";
 
 /**
  * BackendWakeup - Silently pings the Render backend on page load

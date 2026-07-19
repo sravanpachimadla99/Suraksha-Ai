@@ -70,13 +70,16 @@ export default function Home() {
             SurakshaAI
           </span>
         </div>
-        <div className="flex items-center gap-6 text-sm font-medium">
+        <div className="flex items-center gap-4 text-sm font-medium">
           <a href="#features" className="text-slate-400 hover:text-white transition-colors hidden sm:block">
             Features
           </a>
-          <a href="#stats" className="text-slate-400 hover:text-white transition-colors hidden sm:block">
-            Impact
-          </a>
+          <Link href="/dashboard" className="text-slate-400 hover:text-white transition-colors hidden sm:block">
+            Dashboard
+          </Link>
+          <Link href="/login" className="text-slate-400 hover:text-white transition-colors hidden sm:block">
+            Login
+          </Link>
           <Link
             href="/citizen"
             className="px-4 py-2 bg-blue-600/20 hover:bg-blue-600/30 text-blue-400 rounded-lg border border-blue-500/30 transition-all text-xs font-bold"

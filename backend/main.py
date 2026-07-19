@@ -96,6 +96,7 @@ from api.reporting.routes import router as reporting_router
 from api.intel_platform.routes import router as intel_router
 from api.prediction.routes import router as prediction_router
 from api.demo.routes import router as demo_router
+from api.auth.routes import router as auth_router
 
 app.include_router(api_router,      prefix="/api/v1")
 app.include_router(website_router,  prefix="/api/v1")
@@ -108,4 +109,5 @@ app.include_router(reporting_router,prefix="/api/v1")
 app.include_router(intel_router,    prefix="/api/v1")
 app.include_router(prediction_router,prefix="/api/v1")
 app.include_router(demo_router,      prefix="/api/v1")
+app.include_router(auth_router,      prefix="/api/v1")
 

@@ -15,7 +15,7 @@ from typing import Any, Dict, List, Optional, Tuple
 
 import httpx
 
-from .feature_extractor import URLFeatureExtractor, SUSPICIOUS_KEYWORDS
+from .feature_extractor import URLFeatureExtractor, SUSPICIOUS_KEYWORDS, _is_known_legitimate
 from .schemas import (
     DNSInfo,
     FeatureVector,
@@ -181,7 +181,10 @@ def _analyze_html(url: str) -> Dict[str, Any]:
         try:
             from bs4 import BeautifulSoup  # type: ignore
 
-            soup = BeautifulSoup(resp.text, "lxml")
+            try:
+                soup = BeautifulSoup(resp.text, "lxml")
+            except Exception:
+                soup = BeautifulSoup(resp.text, "html.parser")
 
             # Page title
             title_tag = soup.find("title")
@@ -354,9 +357,9 @@ def _build_recommendations(
 
 def _predict(risk_score: float) -> Tuple[str, float]:
     """Map a 0-1 risk score to a prediction label and confidence."""
-    if risk_score >= 0.65:
+    if risk_score >= 0.70:
         return "Phishing", round(risk_score, 3)
-    elif risk_score >= 0.35:
+    elif risk_score >= 0.45:
         return "Suspicious", round(0.5 + risk_score * 0.3, 3)
     else:
         return "Legitimate", round(1.0 - risk_score, 3)
@@ -398,16 +401,17 @@ def analyze_website(
     # --- Risk scoring ---------------------------------------------------------
     rule_score = extractor.rule_based_risk_score()
 
-    # Boost from network / HTML signals
+    # Boost from network / HTML signals — ONLY for non-whitelisted domains
     bonus = 0.0
-    if not ssl_info.valid:
-        bonus += 0.10
-    if whois_info.domain_age_days is not None and whois_info.domain_age_days < 90:
-        bonus += 0.10
-    if html_info.get("has_obfuscated_js"):
-        bonus += 0.15
-    if html_info.get("suspicious_text_count", 0) >= 2:
-        bonus += 0.10
+    if not _is_known_legitimate(extractor.domain):
+        if not ssl_info.valid:
+            bonus += 0.10
+        if whois_info.domain_age_days is not None and whois_info.domain_age_days < 90:
+            bonus += 0.10
+        if html_info.get("has_obfuscated_js"):
+            bonus += 0.15
+        if html_info.get("suspicious_text_count", 0) >= 2:
+            bonus += 0.10
 
     risk_score = min(rule_score + bonus, 1.0)
     prediction, confidence = _predict(risk_score)

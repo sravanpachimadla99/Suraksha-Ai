@@ -17,7 +17,7 @@ class Neo4jClient:
             await self.driver.verify_connectivity()
             logger.info("Connected to Neo4j database")
         except Exception as e:
-            logger.error(f"Failed to connect to Neo4j: {e}")
+            logger.warning(f"Neo4j database not detected on {self.uri}. Graph Intelligence will run in mock mode.")
             self.driver = None
 
     async def close(self):
